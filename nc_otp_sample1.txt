@@ -1,0 +1,655 @@
+
+application.properties
+===================
+
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.url=jdbc:mysql://localhost:3306/otpsampledb
+spring.datasource.username=root
+spring.datasource.password=Admin@123
+spring.jpa.properties.hibernate.format_sql=true
+
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=your_email_address
+spring.mail.password=your_email_password
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+
+=========
+
+Login.html
+
+========
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Welcome to NC Home</title>
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container text-center">
+		<h1>Welcome to Northern City </h1>
+		<h3><a th:href="@{/users}">List of Users</a></h3>
+		<h3><a th:href="@{/register}">Register</a></h3>
+		<h3><a th:href="@{/login}">Login</a></h3>
+	</div>
+	
+</body>
+</html>
+
+=============
+
+register.html
+
+=============
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Sign Up - CodeJava</title>
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container text-center">
+		<div>
+			<h1>User Registration - Sign Up</h1>
+		</div>
+		<form th:action="@{/process_register}" th:object="${user}" 
+			method="post" style="max-width: 600px; margin: 0 auto;">
+		<div class="m-3">
+			<div class="form-group row">
+				<label class="col-4 col-form-label">E-mail: </label>
+				<div class="col-8">
+					<input type="email" th:field="*{email}" class="form-control" required />
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<label class="col-4 col-form-label">Password: </label>
+				<div class="col-8">
+					<input type="password" th:field="*{password}" class="form-control" 
+							required minlength="6" maxlength="10"/>
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<label class="col-4 col-form-label">First Name: </label>
+				<div class="col-8">
+					<input type="text" th:field="*{firstName}" class="form-control" 
+							required minlength="2" maxlength="20"/>
+				</div>
+			</div>
+			
+			<div class="form-group row">
+				<label class="col-4 col-form-label">Last Name: </label>
+				<div class="col-8">
+					<input type="text" th:field="*{lastName}" class="form-control" 
+							required minlength="2" maxlength="20" />
+				</div>
+			</div>
+			
+			<div>
+				<button type="submit" class="btn btn-primary">Sign Up</button> 
+			</div>
+		</div>
+		</form>
+	</div>
+</body>
+</html>
+
+==========
+
+register_success.html
+
+============
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Registration Success</title>
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container text-center">
+		<h3>You have signed up successfully!</h3>
+		<p>Please check your email to verify your account.</p>		
+		<h4><a th:href="@{/login}">Click here to Login</a></h4>
+	</div>
+	
+</body>
+</html>
+
+===============
+
+verify_success.html
+============
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>User Verification</title>
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container text-center">
+		<h3>Congratulations, your account has been verified.</h3>
+		<h4><a th:href="@{/login}">Click here to Login</a></h4>
+	</div>
+</body>
+</html>
+
+=============
+verify_fail.html
+==============
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>User Verification</title>
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container text-center">
+		<h3>Sorry, we could not verify account. It maybe already verified, or verification code is incorrect.</h3>
+	</div>
+</body>
+</html>
+
+================
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>User Dashboard</title>
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+</head>
+<body>
+<div class="container text-center">
+	<div>
+		<form th:action="@{/logout}" method="post">
+			<p>
+				Welcome <b>[[${#request.userPrincipal.principal.fullName}]]</b>
+			</p>
+			<input type="submit" value="Sign Out" />
+		</form>
+	</div>
+	<div>
+		<h1>User Dashboard</h1>
+	</div>
+	
+	<div>
+		<p> lorem </p>
+	</div>
+</div>
+</body>
+</html>
+
+================
+
+
+Model List
+
+===============
+
+User.java 
+
+package com.northerncity;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "users")
+public class User {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	@Column(nullable = false, unique = true, length = 45)
+	private String email;
+	
+	@Column(nullable = false, length = 64)
+	private String password;
+	
+	@Column(name = "first_name", nullable = false, length = 20)
+	private String firstName;
+	
+	@Column(name = "last_name", nullable = false, length = 20)
+	private String lastName;
+	
+	@Column(name = "verification_code", length = 64)
+	private String verificationCode;
+	
+	private boolean enabled;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getVerificationCode() {
+		return verificationCode;
+	}
+
+	public void setVerificationCode(String verificationCode) {
+		this.verificationCode = verificationCode;
+	}
+	
+	public String getFullName() {
+		return this.firstName + " " + this.lastName;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	
+}
+=============
+
+UserRepository.java 
+
+
+=============
+
+package com.northerncity;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+	@Query("SELECT u FROM User u WHERE u.email = ?1")
+	public User findByEmail(String email);
+	
+	@Query("SELECT u FROM User u WHERE u.verificationCode = ?1")
+	public User findByVerificationCode(String code);
+}
+
+=================
+
+UserServices.java 
+
+===========
+
+package com.northerncity;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import net.bytebuddy.utility.RandomString;
+
+@Service
+public class UserServices {
+
+	@Autowired
+	private UserRepository repo;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	private JavaMailSender mailSender;
+	
+	public List<User> listAll() {
+		return repo.findAll();
+	}
+	
+	public void register(User user, String siteURL) 
+			throws UnsupportedEncodingException, MessagingException {
+		String encodedPassword = passwordEncoder.encode(user.getPassword());
+		user.setPassword(encodedPassword);
+		
+		String randomCode = RandomString.make(64);
+		user.setVerificationCode(randomCode);
+		user.setEnabled(false);
+		
+		repo.save(user);
+		
+		sendVerificationEmail(user, siteURL);
+	}
+	
+	private void sendVerificationEmail(User user, String siteURL) 
+			throws MessagingException, UnsupportedEncodingException {
+		String toAddress = user.getEmail();
+		String fromAddress = "your email address";
+		String senderName = "your company name";
+		String subject = "Please verify your registration";
+		String content = "Dear [[name]],<br>"
+				+ "Please click the link below to verify your registration:<br>"
+				+ "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
+				+ "Thank you,<br>"
+				+ "Your company name.";
+		
+		MimeMessage message = mailSender.createMimeMessage();
+		MimeMessageHelper helper = new MimeMessageHelper(message);
+		
+		helper.setFrom(fromAddress, senderName);
+		helper.setTo(toAddress);
+		helper.setSubject(subject);
+		
+		content = content.replace("[[name]]", user.getFullName());
+		String verifyURL = siteURL + "/verify?code=" + user.getVerificationCode();
+		
+		content = content.replace("[[URL]]", verifyURL);
+		
+		helper.setText(content, true);
+		
+		mailSender.send(message);
+		
+		System.out.println("Email has been sent");
+	}
+	
+	public boolean verify(String verificationCode) {
+		User user = repo.findByVerificationCode(verificationCode);
+		
+		if (user == null || user.isEnabled()) {
+			return false;
+		} else {
+			user.setVerificationCode(null);
+			user.setEnabled(true);
+			repo.save(user);
+			
+			return true;
+		}
+		
+	}
+	
+}
+
+==============
+
+WebSecurityConfig.java 
+
+==================
+
+package com.northerncity;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	@Autowired
+	private DataSource dataSource;
+	
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return new CustomUserDetailsService();
+	}
+	
+	@Bean
+	public BCryptPasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	public DaoAuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+		authProvider.setUserDetailsService(userDetailsService());
+		authProvider.setPasswordEncoder(passwordEncoder());
+		
+		return authProvider;
+	}
+
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.authenticationProvider(authenticationProvider());
+	}
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests()
+			.antMatchers("/users").authenticated()
+			.anyRequest().permitAll()
+			.and()
+			.formLogin()
+				.usernameParameter("email")
+				.defaultSuccessUrl("/users")
+				.permitAll()
+			.and()
+			.logout().logoutSuccessUrl("/").permitAll();
+	}
+	
+	
+}
+
+
+
+================
+
+LoginController.java 
+
+================
+
+package com.northerncity;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+
+@Controller
+public class LoginController {
+
+	@Autowired
+	private UserServices service;
+	
+	@GetMapping("")
+	public String viewHomePage() {
+		return "index";
+	}
+	
+	@GetMapping("/register")
+	public String showRegistrationForm(Model model) {
+		model.addAttribute("user", new User());
+		
+		return "signup_form";
+	}
+	
+	@PostMapping("/process_register")
+	public String processRegister(User user, HttpServletRequest request) 
+			throws UnsupportedEncodingException, MessagingException {
+		service.register(user, getSiteURL(request));		
+		return "register_success";
+	}
+	
+	@GetMapping("/users")
+	public String listUsers(Model model) {
+		List<User> listUsers = service.listAll();
+		model.addAttribute("listUsers", listUsers);
+		
+		return "users";
+	}
+	
+	private String getSiteURL(HttpServletRequest request) {
+		String siteURL = request.getRequestURL().toString();
+		return siteURL.replace(request.getServletPath(), "");
+	}	
+	
+	@GetMapping("/verify")
+	public String verifyUser(@Param("code") String code) {
+		if (service.verify(code)) {
+			return "verify_success";
+		} else {
+			return "verify_fail";
+		}
+	}
+}
+
+
+================
+
+CustomUserDetails.java
+
+==================
+
+package com.northerncity;
+
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+public class CustomUserDetails implements UserDetails {
+
+	private User user;
+	
+	public CustomUserDetails(User user) {
+		this.user = user;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return null;
+	}
+
+	@Override
+	public String getPassword() {
+		return user.getPassword();
+	}
+
+	@Override
+	public String getUsername() {
+		return user.getEmail();
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return user.isEnabled();
+	}
+	
+	public String getFullName() {
+		return user.getFirstName() + " " + user.getLastName();
+	}
+
+}
+
+
+=======================
+
+
+
+CustomUserDetailsService.java 
+
+===================
+
+package com.northerncity;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+public class CustomUserDetailsService implements UserDetailsService {
+
+	@Autowired
+	private UserRepository userRepo;
+	
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userRepo.findByEmail(username);
+		if (user == null) {
+			throw new UsernameNotFoundException("User not found");
+		}
+		return new CustomUserDetails(user);
+	}
+
+}
+
+
+===================
+
